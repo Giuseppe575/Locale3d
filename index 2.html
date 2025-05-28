@@ -1,0 +1,69 @@
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>Locale 3D con Lavatrice Realistica</title>
+  <style>
+    body { margin: 0; overflow: hidden; }
+    canvas { display: block; }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+</head>
+<body>
+  <script>
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(60, window.innerWidth/window.innerHeight, 0.1, 100);
+    camera.position.set(6, 5, 7);
+    camera.lookAt(0, 1.5, 0);
+
+    const renderer = new THREE.WebGLRenderer({antialias: true});
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+    scene.add(ambientLight);
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.6);
+    directionalLight.position.set(5, 10, 7);
+    scene.add(directionalLight);
+
+    const spessore = 0.05;
+    const lung = 5, largh = 4, alt = 3.5;
+
+    const parete1 = new THREE.Mesh(new THREE.BoxGeometry(lung, alt, spessore), new THREE.MeshStandardMaterial({color: 0xe0e0e0}));
+    parete1.position.set(0, alt/2, -largh/2);
+    scene.add(parete1);
+
+    const parete2 = new THREE.Mesh(new THREE.BoxGeometry(spessore, alt, largh), new THREE.MeshStandardMaterial({color: 0xe0e0e0}));
+    parete2.position.set(-lung/2, alt/2, 0);
+    scene.add(parete2);
+
+    const pavimento = new THREE.Mesh(new THREE.PlaneGeometry(lung, largh), new THREE.MeshStandardMaterial({color: 0xcccccc}));
+    pavimento.rotation.x = -Math.PI / 2;
+    scene.add(pavimento);
+
+    const loader = new THREE.GLTFLoader();
+    loader.load('models/lavatrice.glb', function (gltf) {
+      const lavatrice = gltf.scene;
+      lavatrice.scale.set(1, 1, 1);
+      lavatrice.position.set(-1.5, 0, -1.5);
+      scene.add(lavatrice);
+    }, undefined, function (error) {
+      console.error("Errore nel caricamento del modello:", error);
+    });
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    function animate() {
+      requestAnimationFrame(animate);
+      renderer.render(scene, camera);
+    }
+    animate();
+  </script>
+</body>
+</html>
