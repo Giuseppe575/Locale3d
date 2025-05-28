@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>Locale 3D con Lavatrice e Mangano</title>
+  <style>
+    body { margin: 0; background: #f0f0f0; }
+    canvas { display: block; }
+  </style>
+</head>
+<body>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script>
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(60, window.innerWidth/window.innerHeight, 0.1, 100);
+    camera.position.set(8, 6, 10);
+    camera.lookAt(0, 1.5, 0);
+
+    const renderer = new THREE.WebGLRenderer({antialias: true});
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    const light = new THREE.AmbientLight(0xffffff, 0.8);
+    scene.add(light);
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+    directionalLight.position.set(10, 10, 10);
+    scene.add(directionalLight);
+
+    const spessore = 0.05;
+    const lung = 5, largh = 4, alt = 3.5;
+
+    const parete1 = new THREE.Mesh(new THREE.BoxGeometry(lung, alt, spessore), new THREE.MeshStandardMaterial({color: 0xe0e0e0}));
+    parete1.position.set(0, alt/2, -largh/2);
+    scene.add(parete1);
+
+    const parete2 = new THREE.Mesh(new THREE.BoxGeometry(spessore, alt, largh), new THREE.MeshStandardMaterial({color: 0xe0e0e0}));
+    parete2.position.set(-lung/2, alt/2, 0);
+    scene.add(parete2);
+
+    const pavimento = new THREE.Mesh(new THREE.PlaneGeometry(lung, largh), new THREE.MeshStandardMaterial({color: 0xcccccc}));
+    pavimento.rotation.x = -Math.PI / 2;
+    scene.add(pavimento);
+
+    const lavatrice = new THREE.Mesh(new THREE.BoxGeometry(0.9, 1.8, 0.8), new THREE.MeshStandardMaterial({color: 0x3b83bd}));
+    lavatrice.position.set(-1.5, 0.9, -1.5);
+    scene.add(lavatrice);
+
+    const mangano = new THREE.Mesh(new THREE.BoxGeometry(2.1, 0.9, 1.4), new THREE.MeshStandardMaterial({color: 0xcc4c4c}));
+    mangano.position.set(0, 0.45, 0);
+    scene.add(mangano);
+
+    function animate() {
+      requestAnimationFrame(animate);
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+  </script>
+</body>
+</html>
